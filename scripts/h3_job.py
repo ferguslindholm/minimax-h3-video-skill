@@ -27,6 +27,7 @@ import urllib.request
 
 API = os.environ.get("MINIMAX_H3_BASE_URL", "https://argolink.io/v1").rstrip("/")
 LEDGER = os.environ.get("H3_LEDGER_DIR", ".h3-jobs")
+USER_AGENT = "minimax-h3-video-skill/1.0"  # sent on every request, including upload PUTs
 RATE = {"768p": 0.039, "2k": 0.064}  # USD per billed second, model page 2026-10-07
 FIXED = ["21:9", "16:9", "4:3", "1:1", "3:4", "9:16"]
 TYPES = {".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".mp4": "video/mp4",
@@ -92,6 +93,7 @@ def estimate(body, ref_video_seconds=0.0):
 def http(method, url, payload=None, raw=False, auth=True, headers=None):
     req = urllib.request.Request(url, method=method, data=None if payload is None else
                                  (payload if isinstance(payload, bytes) else json.dumps(payload).encode()))
+    req.add_header("User-Agent", USER_AGENT)
     if auth:
         key = os.environ.get("MINIMAX_H3_API_KEY")
         if not key:

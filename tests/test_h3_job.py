@@ -75,6 +75,7 @@ def test_submit_uploads_records_and_blocks_duplicates(capsys, api, tmp_path):
     assert json.loads(ticket.data)["content_type"] == "image/png"
     assert put.get_header("Authorization") is None
     assert submit.get_header("Authorization") == "Bearer secret"
+    assert {r.get_header("User-agent") for r in (ticket, put, submit)} == {"minimax-h3-video-skill/1.0"}
     ledger = json.loads((tmp_path / ".h3-jobs" / f"{out['request_id']}.json").read_text())
     assert ledger["status"] == "submitted" and ledger["estimated_usd"] == pytest.approx(0.195)
 
